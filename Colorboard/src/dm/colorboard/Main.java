@@ -3,6 +3,7 @@ package dm.colorboard;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
+import dm.colorboard.component.FormatException;
 import dm.colorboard.component.Game;
 import dm.colorboard.io.InputReader;
 import dm.colorboard.io.OutputWriter;
@@ -30,13 +31,26 @@ public class Main{
 			return;
 		}
 		
-		//User one or the other
-		//writeToConsole(inputReader);
-		writeToFile(inputReader, outputWriter);
+		
+	
+		
+		//Use one or the other
+		try {
+			//writeToConsole(inputReader);
+			writeToFile(inputReader, outputWriter);
+		} catch (FormatException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		
+		
+			
+		
 		
 	}
 	
-	private static void writeToFile(InputReader inputReader, OutputWriter outputWriter){
+	private static void writeToFile(InputReader inputReader, OutputWriter outputWriter) throws FormatException, IOException{
 		Game game;
 		while((game = inputReader.readNextGame()) != null){//Loop through games until null game is returned
 			try {
@@ -53,9 +67,9 @@ public class Main{
 		}
 	}
 	
-	private static void writeToConsole(InputReader inputReader){
+	private static void writeToConsole(InputReader inputReader) throws FormatException, IOException{
 		Game game;
-		while((game = inputReader.readNextGame()) != null){//Loop through games untill null game is returned
+		while((game = inputReader.readNextGame()) != null){//Loop through games until null game is returned
 			System.out.println(game.runGame());
 		}
 	}

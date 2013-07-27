@@ -16,7 +16,7 @@ public class Deck{
 	 * @param deckSize Actual size of the deck
 	 */
 	public Deck(int deckSize){
-		cards = new ArrayList<Card>(deckSize);
+		cards = new ArrayList<Card>();
 		this.deckSize = deckSize; 
 	}
 	
@@ -42,6 +42,13 @@ public class Deck{
 	 */
 	public Card pullTopCard(){
 		return cards.remove(0);
+	}
+	
+	public boolean isDeckComplete(){
+		if(cards.size() == deckSize)
+			return true;
+		else
+			return false;
 	}
 	
 }

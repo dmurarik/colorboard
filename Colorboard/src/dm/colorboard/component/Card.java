@@ -13,10 +13,14 @@ public class Card{
 	 * Constructor
 	 * @param color Char representing the card color
 	 * @param doubleCard The card is a double color
+	 * @throws FormatException 
 	 */
-	public Card(char color, boolean doubleCard){
+	public Card(char color, boolean doubleCard) throws FormatException{
+		if(!Character.isLetter(color))
+			throw new FormatException("Incorrect card input");
 		this.color = color;
 		this.doubleCard = doubleCard;
+			
 	}
 	
 	/**

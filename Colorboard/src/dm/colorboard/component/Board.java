@@ -20,8 +20,12 @@ public class Board{
 	/**
 	 * Populate board from string input
 	 * @param line String to parse
+	 * @throws FormatException 
 	 */
-	public void parseBoardFromString(String line){
+	public void parseBoardFromString(String line) throws FormatException{
+		if(line.length() != squares.length)
+			throw new FormatException("Incorrect input format. Board length and actual do not match");
+		
 		for(int i = 0; i < line.length();i++){
 			squares[i] = line.charAt(i);
 		}

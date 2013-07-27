@@ -8,6 +8,7 @@ import java.io.IOException;
 import dm.colorboard.component.Board;
 import dm.colorboard.component.Card;
 import dm.colorboard.component.Deck;
+import dm.colorboard.component.FormatException;
 import dm.colorboard.component.Game;
 
 /**
@@ -20,6 +21,8 @@ public class InputReader{
 	private final int PARSE_PLAYER_COUNT = 0;
 	private final int PARSE_BOARD_SIZE = 1;
 	private final int PARSE_DECK_SIZE = 2;
+	private final char END_OF_FILE_CHAR = '0';
+	
 	
 	private BufferedReader br;
 	
@@ -36,56 +39,53 @@ public class InputReader{
 	/**
 	 * Read input stream for the next game
 	 * @return Parsed game or null for EOF
+	 * @throws FormatException 
+	 * @throws IOException 
 	 */
-	public Game readNextGame(){
+	public Game readNextGame() throws FormatException, IOException{
 		String line;
 		Game nextGame = new Game();
-		try {
-			line = br.readLine();
-			
-			if(line.charAt(0) == '0')//EOF test
+		if((line = br.readLine()) != null){
+			char initalChar = line.charAt(0);
+			if(initalChar == END_OF_FILE_CHAR){//EOF test
+				br.close();
 				return null;
-			
-			if(line != null){//Read game setup line
-				parseGameSetupLine(nextGame, line);
 			}
+			if(!Character.isDigit(initalChar))//If this is not a digit there is a formatting error
+				throw new FormatException("Incorrect input format");
 			
-			//Read board string
-			if((line = br.readLine()) != null){
-				nextGame.getBoard().parseBoardFromString(line);
-			}
+			parseGameSetupLine(nextGame, line);//Read game setup line
 			
-			//Read deck 
-			for(int i = 0; i < nextGame.getDeck().getDeckSize();i++){
-				if((line = br.readLine()) != null){
-					nextGame.getDeck().addCardToDeck(
-							new Card(line.charAt(0), line.length() == 2)
-							);
-				}
-			}
-			return nextGame;
-		} catch (IOException e) {
-			e.printStackTrace();
 		}
 		
-		try {
-			br.close();
-		} catch (IOException e) {
-			e.printStackTrace();
+		if((line = br.readLine()) != null){
+			nextGame.getBoard().parseBoardFromString(line);//Read board string
 		}
-		return null;
+		
+		
+		for(int i = 0; i < nextGame.getDeck().getDeckSize();i++){
+			if((line = br.readLine()) != null){
+				nextGame.getDeck().addCardToDeck(//Read deck 
+						new Card(line.charAt(0), line.length() == 2)
+						);
+			}
+		}
+		
+		return nextGame;
 	}
 	
 	/**
 	 * Parse game initialization line
 	 * @param currentGame new Game 
 	 * @param line line to parse
+	 * @throws FormatException 
 	 */
-	private void parseGameSetupLine(Game currentGame, String line){
+	private void parseGameSetupLine(Game currentGame, String line) throws FormatException{
 		String[] intsToParse = line.split(" ");
-		int[] gameInfo = new int[intsToParse.length];
+		if(intsToParse.length <= 2)
+			throw new FormatException("Incorrect input format. Game initialization line");
 		// Parse each part in turn
-		for (int i = 0; i < gameInfo.length; i++)
+		for (int i = 0; i < intsToParse.length; i++)
 		{
 			if(i == PARSE_PLAYER_COUNT){
 				currentGame.setPlayerCount(Integer.parseInt(intsToParse[i]));

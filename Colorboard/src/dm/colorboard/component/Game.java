@@ -105,7 +105,7 @@ public class Game{
 			player.setBoardPosition(
 					board.findNextColorPosition(player.getBoardPosition(), cardPulled.getColor())
 					);
-			if(cardPulled.isDouble()){
+			if(cardPulled.isDouble()){//If its a double card move again 
 				player.setBoardPosition(
 						board.findNextColorPosition(player.getBoardPosition(), cardPulled.getColor())
 								);
